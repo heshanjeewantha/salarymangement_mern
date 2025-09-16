@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import Layout from '../components/Layout';
 
 const Leaveform = () => {
   const [leave, setleave] = useState({
@@ -60,6 +61,9 @@ const Leaveform = () => {
   };
 
   return (
+
+    <Layout>
+
     <div className="bg-white h-screen overflow-y-auto">
       
           <div className="flex min-h-screen items-center justify-center">
@@ -176,6 +180,9 @@ const Leaveform = () => {
           </div>
         
     </div>
+
+    </Layout>
+
   );
 };
 
