@@ -1,46 +1,52 @@
 {
-  "hash": "f742c3ac",
-  "configHash": "4be9ac8a",
-  "lockfileHash": "70faf997",
-  "browserHash": "75af92c6",
+  "hash": "6332b66a",
+  "configHash": "3f5ad017",
+  "lockfileHash": "b957c006",
+  "browserHash": "d4e174d4",
   "optimized": {
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "9f414bec",
+      "fileHash": "3ea67519",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "149c3e99",
+      "fileHash": "b98819e5",
       "needsInterop": true
     },
     "react-router-dom": {
       "src": "../../node_modules/react-router-dom/dist/index.mjs",
       "file": "react-router-dom.js",
-      "fileHash": "57bd4f1c",
+      "fileHash": "f1222715",
       "needsInterop": false
     },
     "axios": {
       "src": "../../node_modules/axios/index.js",
       "file": "axios.js",
-      "fileHash": "d91b84bb",
+      "fileHash": "6762b548",
       "needsInterop": false
     },
     "react-icons/fa": {
       "src": "../../node_modules/react-icons/fa/index.mjs",
       "file": "react-icons_fa.js",
-      "fileHash": "e677e056",
+      "fileHash": "8e52d671",
+      "needsInterop": false
+    },
+    "@heroicons/react/24/outline": {
+      "src": "../../node_modules/@heroicons/react/24/outline/esm/index.js",
+      "file": "@heroicons_react_24_outline.js",
+      "fileHash": "cb2de629",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-FYGYNQUM": {
-      "file": "chunk-FYGYNQUM.js"
+    "chunk-6RZRVTL6": {
+      "file": "chunk-6RZRVTL6.js"
     },
-    "chunk-32EALFBN": {
-      "file": "chunk-32EALFBN.js"
+    "chunk-7ETY4VQD": {
+      "file": "chunk-7ETY4VQD.js"
     },
     "chunk-G3PMV62Z": {
       "file": "chunk-G3PMV62Z.js"

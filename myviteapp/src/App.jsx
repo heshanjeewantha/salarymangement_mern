@@ -14,7 +14,7 @@ function App() {
     <Routes>
 
 
-  <Route path="/" element={<Leaveform/>}/>
+      <Route path="/" element={<Leaveform/>}/>
   <Route path="/salary" element={<SalaryForm/>}/>
   <Route path="/salary-table" element={<SalaryTable/>}/>
   <Route path="/salary/update/:id" element={<UpdateSalary/>}/>
@@ -22,6 +22,7 @@ function App() {
 
     </Routes>
     </Router>
+     
     </>
   )
 }
