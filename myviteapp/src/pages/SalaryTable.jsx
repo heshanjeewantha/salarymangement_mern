@@ -103,7 +103,7 @@ const SalaryTable = () => {
                   <td className="py-2 px-4 border-b">{s.month}</td>
                   <td className="py-2 px-4 border-b">{s.year}</td>
                   <td className="py-2 px-4 border-b">{s.basicSalary}</td>
-                  <td className="py-2 px-4 border-b">{s.netSalary}</td>
+                  <td className="py-2 px-4 border-b">{Number(s.netSalary).toFixed(2)}</td>
                   <td className="py-2 px-4 border-b">
                     <button className="bg-yellow-500 text-white px-3 py-1 rounded mr-2" onClick={() => handleEdit(s)}>Update</button>
                     <button className="bg-red-600 text-white px-3 py-1 rounded" onClick={() => handleDelete(s._id)}>Delete</button>
