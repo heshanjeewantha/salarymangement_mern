@@ -5,7 +5,9 @@ const Salary = require('../models/Salary');
 function calculateSalaryComponents(salaryData) {
   const bs = salaryData.basicSalary;
   const perDay = bs / 28;
-  const hourlyRate = perDay / 8;
+// OT calculation based on rules
+// OT rate = basicSalary / 28 / 8
+const hourlyRate = bs / 28 / 8;
   const normalOTRate = hourlyRate * 1;
   const holidayOTRate = hourlyRate * 1.5;
 
