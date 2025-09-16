@@ -92,17 +92,26 @@ const Leaveform = () => {
 
 
   <div className="w-1/2">
-    <label className="block text-sm font-medium text-gray-700">Leave Type <span className="text-red-500">*</span></label>
-    <input
-      type="number"
-      name="leaveType"
-      value={leave.leaveType}
-      onChange={handleChange}
-      className="w-full mt-1 p-2 border rounded-md bg-blue-50"
-      placeholder="Leave Type"
-      required
-    />
-  </div>
+  <label className="block text-sm font-medium text-gray-700">
+    Leave Type <span className="text-red-500">*</span>
+  </label>
+  <select
+    name="leaveType"
+    value={leave.leaveType}
+    onChange={handleChange}
+    className="w-full mt-1 p-2 border rounded-md bg-blue-50"
+    required
+  >
+    <option value=""> Leave Type </option>
+    <option value="Sick">Sick</option>
+    <option value="Casual">Casual</option>
+    <option value="Earned">Earned</option>
+    <option value="Maternity">Maternity</option>
+    <option value="Paternity">Paternity</option>
+    <option value="Unpaid">Unpaid</option>
+  </select>
+</div>
+
 </div>
 
 
