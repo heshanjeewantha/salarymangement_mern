@@ -1,9 +1,107 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 
 const SalaryTable = () => {
   const [salaries, setSalaries] = useState([]);
   const navigate = useNavigate();
+
+  // Export salaries as Excel
+  const handleExport = () => {
+    if (!salaries.length) return;
+    
+    // Prepare the data
+    const headers = [
+      'Employee ID',
+      'Month',
+      'Year',
+      'Basic Salary',
+      // Allowances
+      'Transport Allowance',
+      'Meal Allowance',
+      'Medical Allowance',
+      'Other Allowance',
+      'Total Allowances',
+      // Overtime
+      'Normal Day Hours',
+      'Holiday Hours',
+      'Total Overtime',
+      // Deductions
+      'Loan Deduction',
+      'Insurance Deduction',
+      'Other Deduction',
+      'Total Deductions',
+      'Net Salary'
+    ];
+
+    const rows = salaries.map(s => {
+      const allowances = s.allowances || {};
+      const overtime = s.overtime || {};
+      const deductions = s.deductions || {};
+      
+      const totalAllowances = Object.values(allowances).reduce((sum, val) => sum + (Number(val) || 0), 0);
+      const totalOvertime = Object.values(overtime).reduce((sum, val) => sum + (Number(val) || 0), 0);
+      const totalDeductions = Object.values(deductions).reduce((sum, val) => sum + (Number(val) || 0), 0);
+      
+      return [
+        s.employeeId,
+        s.month,
+        s.year,
+        Number(s.basicSalary).toFixed(2),
+        // Allowances
+        Number(allowances.transport || 0).toFixed(2),
+        Number(allowances.meal || 0).toFixed(2),
+        Number(allowances.medical || 0).toFixed(2),
+        Number(allowances.other || 0).toFixed(2),
+        totalAllowances.toFixed(2),
+        // Overtime
+        Number(overtime.normalDayHours || 0).toFixed(2),
+        Number(overtime.holidayHours || 0).toFixed(2),
+        totalOvertime.toFixed(2),
+        // Deductions
+        Number(deductions.loan || 0).toFixed(2),
+        Number(deductions.insurance || 0).toFixed(2),
+        Number(deductions.other || 0).toFixed(2),
+        totalDeductions.toFixed(2),
+        Number(s.netSalary).toFixed(2)
+      ];
+    });
+
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+
+    // Set column widths
+    const colWidths = [
+      { wch: 15 }, // Employee ID
+      { wch: 10 }, // Month
+      { wch: 8 },  // Year
+      { wch: 12 }, // Basic Salary
+      // Allowances
+      { wch: 15 }, // Transport
+      { wch: 15 }, // Meal
+      { wch: 15 }, // Medical
+      { wch: 15 }, // Other Allowance
+      { wch: 15 }, // Total Allowances
+      // Overtime
+      { wch: 15 }, // Normal Day Hours
+      { wch: 15 }, // Holiday Hours
+      { wch: 15 }, // Total Overtime
+      // Deductions
+      { wch: 15 }, // Loan
+      { wch: 15 }, // Insurance
+      { wch: 15 }, // Other Deduction
+      { wch: 15 }, // Total Deductions
+      { wch: 12 }  // Net Salary
+    ];
+    ws['!cols'] = colWidths;
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Salary Report');
+
+    // Generate Excel file
+    XLSX.writeFile(wb, 'salary_report.xlsx');
+  };
 
   useEffect(() => {
     fetch('http://localhost:5000/api/salaries')
@@ -77,7 +175,10 @@ const SalaryTable = () => {
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-blue-700">Salary Records</h2>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition" onClick={() => navigate('/salary')}>Create</button>
+        <div className="flex gap-3">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition" onClick={() => navigate('/salary')}>Create</button>
+          <button className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition" onClick={handleExport}>Export Report</button>
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg">
