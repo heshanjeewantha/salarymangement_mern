@@ -81,7 +81,7 @@ const Header = () => {
                   {isLoggedIn ? (
                     <>
                       <Link
-                        to="/dashboard"
+                        to="/leavestatus"
                         className="block px-4 py-2 text-gray-900 hover:bg-gradient-to-r from-blue-400 to-purple-200"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
