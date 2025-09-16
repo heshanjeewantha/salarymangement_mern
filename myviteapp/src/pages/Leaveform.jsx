@@ -154,7 +154,7 @@ const Leaveform = () => {
     value={leave.reason}
     onChange={handleChange}
     className="w-full mt-1 p-2 border rounded-md bg-blue-50"
-    placeholder="Enter the reason"
+    placeholder="please provide the reason for leave"
     rows={4} 
     required
   />
