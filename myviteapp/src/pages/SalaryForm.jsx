@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const initialSalary = {
   employeeId: '',
@@ -24,8 +25,8 @@ const initialSalary = {
 
 const SalaryForm = () => {
   const [salary, setSalary] = useState(initialSalary);
-  // ...existing code...
   const [editingId, setEditingId] = useState(null);
+  const navigate = useNavigate();
 
   // ...existing code...
 
@@ -51,15 +52,36 @@ const SalaryForm = () => {
     e.preventDefault();
     const method = editingId ? 'PUT' : 'POST';
   const url = editingId ? `http://localhost:5000/api/salaries/${editingId}` : 'http://localhost:5000/api/salaries';
+  // Convert relevant fields to numbers
+  const salaryToSend = {
+    ...salary,
+    year: Number(salary.year),
+    basicSalary: Number(salary.basicSalary),
+    allowances: {
+      transport: Number(salary.allowances.transport),
+      meal: Number(salary.allowances.meal),
+      medical: Number(salary.allowances.medical),
+      other: Number(salary.allowances.other)
+    },
+    overtime: {
+      normalDayHours: Number(salary.overtime.normalDayHours),
+      holidayHours: Number(salary.overtime.holidayHours)
+    },
+    deductions: {
+      loan: Number(salary.deductions.loan),
+      insurance: Number(salary.deductions.insurance),
+      other: Number(salary.deductions.other)
+    }
+  };
   const res = await fetch(url, {
     method,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(salary)
+    body: JSON.stringify(salaryToSend)
   });
     if (res.ok) {
       setSalary(initialSalary);
       setEditingId(null);
-      // ...existing code...
+      navigate('/salary-table');
     }
   };
 
