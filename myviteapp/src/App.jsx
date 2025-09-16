@@ -4,6 +4,7 @@ import Leaveform from './pages/Leaveform';
 import SalaryForm from './pages/SalaryForm';
 import SalaryTable from './pages/SalaryTable';
 import UpdateSalary from './pages/UpdateSalary';
+import Leavestatus from './pages/Leavestatus';
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
 
 
       <Route path="/" element={<Leaveform/>}/>
+      <Route path="/leavestatus" element={<Leavestatus/>}/>
   <Route path="/salary" element={<SalaryForm/>}/>
   <Route path="/salary-table" element={<SalaryTable/>}/>
   <Route path="/salary/update/:id" element={<UpdateSalary/>}/>

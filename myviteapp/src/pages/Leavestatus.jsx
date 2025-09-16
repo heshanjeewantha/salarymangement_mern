@@ -5,6 +5,8 @@ import Layout from "../components/Layout";
 
 const Leavestatus = () => {
   const [leaves, setLeaves] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchLeaves = async () => {
