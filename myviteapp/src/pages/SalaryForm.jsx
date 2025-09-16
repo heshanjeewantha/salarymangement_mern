@@ -13,19 +13,13 @@ const initialSalary = {
   },
   overtime: {
     normalDayHours: '',
-    holidayHours: '',
-    normalDayRate: '',
-    holidayRate: '',
-    total: ''
+    holidayHours: ''
   },
   deductions: {
     loan: '',
-    epf: '',
-    etf: '',
     insurance: '',
     other: ''
-  },
-  netSalary: '',
+  }
 };
 
 const SalaryForm = () => {
@@ -58,10 +52,10 @@ const SalaryForm = () => {
     const method = editingId ? 'PUT' : 'POST';
   const url = editingId ? `http://localhost:5000/api/salaries/${editingId}` : 'http://localhost:5000/api/salaries';
   const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(salary)
-    });
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(salary)
+  });
     if (res.ok) {
       setSalary(initialSalary);
       setEditingId(null);
@@ -121,17 +115,14 @@ const SalaryForm = () => {
             <h4 className="font-semibold text-blue-600 mb-2">Overtime</h4>
             <input name="overtime.normalDayHours" value={salary.overtime.normalDayHours} onChange={handleChange} placeholder="Normal Day Hours" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
             <input name="overtime.holidayHours" value={salary.overtime.holidayHours} onChange={handleChange} placeholder="Holiday Hours" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-            <input name="overtime.normalDayRate" value={salary.overtime.normalDayRate} onChange={handleChange} placeholder="Normal Day Rate" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-            <input name="overtime.holidayRate" value={salary.overtime.holidayRate} onChange={handleChange} placeholder="Holiday Rate" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-            <input name="overtime.total" value={salary.overtime.total} onChange={handleChange} placeholder="Total Overtime" type="number" className="w-full px-4 py-2 border rounded-lg" />
+            {/* Only normalDayHours and holidayHours needed for overtime */}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="font-semibold text-blue-600 mb-2">Deductions</h4>
             <input name="deductions.loan" value={salary.deductions.loan} onChange={handleChange} placeholder="Loan" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-            <input name="deductions.epf" value={salary.deductions.epf} onChange={handleChange} placeholder="EPF" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-            <input name="deductions.etf" value={salary.deductions.etf} onChange={handleChange} placeholder="ETF" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
+            {/* Only loan, insurance, other needed for deductions */}
             <input name="deductions.insurance" value={salary.deductions.insurance} onChange={handleChange} placeholder="Insurance" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
             <input name="deductions.other" value={salary.deductions.other} onChange={handleChange} placeholder="Other" type="number" className="w-full px-4 py-2 border rounded-lg" />
           </div>
