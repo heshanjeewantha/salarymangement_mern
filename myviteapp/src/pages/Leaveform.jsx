@@ -37,7 +37,7 @@ const Leaveform = () => {
     formdata.append("reason", leave.reason);
 
     try {
-      await axios.post("http://localhost:5000/api/leaves", leave);
+      await axios.post("http://localhost:5000/api/leaves/create", leave);
 
       alert("successfully submitted!");
 
