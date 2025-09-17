@@ -96,16 +96,23 @@ const SalaryForm = () => {
 
   // ...existing code...
 
+  // Demo employee IDs
+  const demoEmployeeIds = Array.from({ length: 10 }, (_, i) => `EMP${(i+1).toString().padStart(4, '0')}`);
+
   return (
     <Layout>
-
       <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg mt-8">
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Salary CRUD Form</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">Employee ID</label>
-              <input name="employeeId" value={salary.employeeId} onChange={handleChange} placeholder="Employee ID" required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <select name="employeeId" value={salary.employeeId} onChange={e => setSalary({ ...salary, employeeId: e.target.value })} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="" disabled selected hidden>Select Employee ID</option>
+                {demoEmployeeIds.map(id => (
+                  <option key={id} value={id}>{id}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">Month</label>
