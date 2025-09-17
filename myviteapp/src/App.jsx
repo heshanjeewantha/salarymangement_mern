@@ -18,10 +18,10 @@ function App() {
 
       <Route path="/" element={<Leaveform/>}/>
       <Route path="/leavestatus" element={<Leavestatus/>}/>
-  <Route path="/salary" element={<SalaryForm/>}/>
-  <Route path="/salary-table" element={<SalaryTable/>}/>
-  <Route path="/salary/update/:id" element={<UpdateSalary/>}/>
-  <Route path="/salary/view/:id" element={<ViewSalary />} />
+      <Route path="/salary" element={<SalaryForm/>}/>
+      <Route path="/salary-table" element={<SalaryTable/>}/>
+      <Route path="/salary/update/:id" element={<UpdateSalary/>}/>
+      <Route path="/salary/view/:id" element={<ViewSalary />} />
 
 
     </Routes>
