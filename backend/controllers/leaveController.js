@@ -31,9 +31,23 @@ exports.getLeaveById = async (req, res) => {
 
 exports.updateLeave = async (req, res) => {
   try {
-    const leave = await Leave.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    console.log('Updating leave with ID:', req.params.id);
+    console.log('Update data:', req.body);
+    
+    const leave = await Leave.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true, runValidators: true }
+    );
+    
+    if (!leave) {
+      return res.status(404).json({ error: 'Leave request not found' });
+    }
+    
+    console.log('Updated leave:', leave);
     res.json(leave);
   } catch (err) {
+    console.error('Error updating leave:', err);
     res.status(400).json({ error: err.message });
   }
 };

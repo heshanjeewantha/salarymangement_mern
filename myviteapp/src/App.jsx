@@ -7,6 +7,7 @@ import SalaryTable from './pages/SalaryTable';
 import UpdateSalary from './pages/UpdateSalary';
 import Leavestatus from './pages/Leavestatus';
 import ViewSalary from './pages/ViewSalary';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
     <Routes>
 
       <Route path="/" element={<Dashboard/>}/>
+      <Route path="/admin" element={<AdminDashboard/>}/>
       <Route path="/leaveform" element={<Leaveform/>}/>
       <Route path="/leavestatus" element={<Leavestatus/>}/>
       <Route path="/salary" element={<SalaryForm/>}/>
