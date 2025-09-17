@@ -47,6 +47,7 @@ const Dashboard = () => {
           }}
           onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
           onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+          onClick={() => navigate('/leaveform')}
           >
             <span role="img" aria-label="user" style={{ fontSize: '2.5rem', marginRight: '1rem' }}>👤</span>
             <span style={{ fontWeight: '600', letterSpacing: '1px' }}>User</span>
