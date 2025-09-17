@@ -1,6 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router,Routes,Route } from "react-router-dom";
 import Leaveform from './pages/Leaveform';
+import Dashboard from './pages/Dashboard';
 import SalaryForm from './pages/SalaryForm';
 import SalaryTable from './pages/SalaryTable';
 import UpdateSalary from './pages/UpdateSalary';
@@ -15,8 +16,8 @@ function App() {
     <Router>
     <Routes>
 
-
-      <Route path="/" element={<Leaveform/>}/>
+      <Route path="/" element={<Dashboard/>}/>
+      <Route path="/leaveform" element={<Leaveform/>}/>
       <Route path="/leavestatus" element={<Leavestatus/>}/>
       <Route path="/salary" element={<SalaryForm/>}/>
       <Route path="/salary-table" element={<SalaryTable/>}/>

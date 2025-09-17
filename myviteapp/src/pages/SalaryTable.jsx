@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const SalaryTable = () => {
   const [salaries, setSalaries] = useState([]);
@@ -172,50 +174,56 @@ const SalaryTable = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-blue-700">Salary Records</h2>
-        <div className="flex gap-3">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition" onClick={() => navigate('/salary')}>Create</button>
-          <button className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition" onClick={handleExport}>Export Report</button>
+    <div style={{ minHeight: '100vh', width: '100vw', background: 'linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%)', display: 'flex', flexDirection: 'column' }}>
+      <Header />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+        <div className="max-w-4xl w-full mx-auto p-6 bg-white rounded-lg shadow-lg mt-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-blue-700">Salary Records</h2>
+            <div className="flex gap-3">
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition" onClick={() => navigate('/salary')}>Create</button>
+              <button className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition" onClick={handleExport}>Export Report</button>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+              <thead>
+                <tr className="bg-blue-100">
+                  <th className="py-3 px-4 border-b text-left">Employee ID</th>
+                  <th className="py-3 px-4 border-b text-left">Month</th>
+                  <th className="py-3 px-4 border-b text-left">Year</th>
+                  <th className="py-3 px-4 border-b text-left">Basic Salary</th>
+                  <th className="py-3 px-4 border-b text-left">Net Salary</th>
+                  <th className="py-3 px-4 border-b text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salaries.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="text-center py-6 text-gray-500">No salary records found.</td>
+                  </tr>
+                ) : (
+                  salaries.map(s => (
+                    <tr key={s._id} className="hover:bg-blue-50 transition">
+                      <td className="py-2 px-4 border-b">{s.employeeId}</td>
+                      <td className="py-2 px-4 border-b">{s.month}</td>
+                      <td className="py-2 px-4 border-b">{s.year}</td>
+                      <td className="py-2 px-4 border-b">{s.basicSalary}</td>
+                      <td className="py-2 px-4 border-b">{Number(s.netSalary).toFixed(2)}</td>
+                      <td className="py-2 px-4 border-b flex gap-2">
+                        <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => navigate(`/salary/view/${s._id}`)}>View</button>
+                        <button className="bg-yellow-500 text-white px-3 py-1 rounded" onClick={() => handleEdit(s)}>Update</button>
+                        <button className="bg-red-600 text-white px-3 py-1 rounded" onClick={() => handleDelete(s._id)}>Delete</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-          <thead>
-            <tr className="bg-blue-100">
-              <th className="py-3 px-4 border-b text-left">Employee ID</th>
-              <th className="py-3 px-4 border-b text-left">Month</th>
-              <th className="py-3 px-4 border-b text-left">Year</th>
-              <th className="py-3 px-4 border-b text-left">Basic Salary</th>
-              <th className="py-3 px-4 border-b text-left">Net Salary</th>
-              <th className="py-3 px-4 border-b text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {salaries.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center py-6 text-gray-500">No salary records found.</td>
-              </tr>
-            ) : (
-              salaries.map(s => (
-                <tr key={s._id} className="hover:bg-blue-50 transition">
-                  <td className="py-2 px-4 border-b">{s.employeeId}</td>
-                  <td className="py-2 px-4 border-b">{s.month}</td>
-                  <td className="py-2 px-4 border-b">{s.year}</td>
-                  <td className="py-2 px-4 border-b">{s.basicSalary}</td>
-                  <td className="py-2 px-4 border-b">{Number(s.netSalary).toFixed(2)}</td>
-                  <td className="py-2 px-4 border-b flex gap-2">
-                    <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => navigate(`/salary/view/${s._id}`)}>View</button>
-                    <button className="bg-yellow-500 text-white px-3 py-1 rounded" onClick={() => handleEdit(s)}>Update</button>
-                    <button className="bg-red-600 text-white px-3 py-1 rounded" onClick={() => handleDelete(s._id)}>Delete</button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <Footer />
     </div>
   );
 };
