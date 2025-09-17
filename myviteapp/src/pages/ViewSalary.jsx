@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
 
 const ViewSalary = () => {
   const { id } = useParams();
@@ -29,6 +30,7 @@ const ViewSalary = () => {
   if (!salary) return <div className="p-8 text-center">No data found.</div>;
 
   return (
+    <Layout>
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-8">
       <h2 className="text-2xl font-bold text-blue-700 mb-4">Salary Details</h2>
       <div className="mb-4">
@@ -64,6 +66,7 @@ const ViewSalary = () => {
       </div>
       <button className="bg-gray-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition" onClick={() => navigate(-1)}>Back</button>
     </div>
+    </Layout>
   );
 };
 
