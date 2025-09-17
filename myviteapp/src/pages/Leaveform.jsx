@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import Layout from '../components/Layout';
 
 const Leaveform = () => {
@@ -41,8 +40,10 @@ const Leaveform = () => {
 
       alert("successfully submitted!");
 
+    
+
       setTimeout(() => {
-        navigate('/#');
+        navigate('/leavestatus');
       }, 3000);
 
       setleave({

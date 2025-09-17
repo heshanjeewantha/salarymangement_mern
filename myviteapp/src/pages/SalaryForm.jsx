@@ -81,7 +81,10 @@ const SalaryForm = () => {
     if (res.ok) {
       setSalary(initialSalary);
       setEditingId(null);
-      navigate('/salary-table');
+      
+      setTimeout(() => {
+        navigate('/salary-table');
+      }, 3000);
     }
   };
 
@@ -94,8 +97,8 @@ const SalaryForm = () => {
   // ...existing code...
 
   return (
-  
-     <Layout>
+    <Layout>
+
       <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg mt-8">
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Salary CRUD Form</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
