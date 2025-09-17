@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
+import Layout from '../components/Layout';
 const initialSalary = {
   employeeId: '',
   month: '',
@@ -94,8 +94,8 @@ const SalaryForm = () => {
   // ...existing code...
 
   return (
-    <>
-      <Header/>
+  
+     <Layout>
       <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg mt-8">
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Salary CRUD Form</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -158,7 +158,7 @@ const SalaryForm = () => {
           </div>
         </form>
       </div>
-    </>
+    </Layout>
   );
 };
 
