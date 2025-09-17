@@ -19,7 +19,7 @@ const Leavestatus = () => {
         setLoading(false);
       }
     };
-    fetchLeaves(); 
+    fetchLeaves();
   }, []);
 
  

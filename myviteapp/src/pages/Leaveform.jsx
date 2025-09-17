@@ -37,9 +37,7 @@ const Leaveform = () => {
     formdata.append("reason", leave.reason);
 
     try {
-      await axios.post("http://localhost:5001/api/coconut/addcoconut", formdata, {
-        withCredentials: true
-      });
+      await axios.post("http://localhost:5000/api/leaves/create", leave);
 
       alert("successfully submitted!");
 

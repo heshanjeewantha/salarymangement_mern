@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const employeeRoutes = require('./routes/employeeRoutes');
+
 const salaryRoutes = require('./routes/salaryRoutes');
 const leaveRoutes = require('./routes/leaveRoutes');
 
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/employees', employeeRoutes);
+
 app.use('/api/salaries', salaryRoutes);
 app.use('/api/leaves', leaveRoutes);
 
