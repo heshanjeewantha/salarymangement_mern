@@ -24,7 +24,12 @@ const UpdateSalary = () => {
   }, [id]);
 
   const handleFormChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    // Prevent negative values and block letters for number inputs
+    if (type === 'number') {
+      if (value !== '' && !/^\d*\.?\d*$/.test(value)) return;
+      if (value !== '' && Number(value) < 0) return;
+    }
     if (name.includes('.')) {
       const [group, field] = name.split('.');
       setForm({
@@ -123,8 +128,13 @@ const UpdateSalary = () => {
                 name="basicSalary"
                 value={form.basicSalary}
                 onChange={handleFormChange}
+                onKeyDown={e => {
+                  if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                  if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                }}
                 required
                 type="number"
+                min="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"
               />
             </div>
@@ -134,17 +144,17 @@ const UpdateSalary = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold text-black mb-2">Allowances</h4>
-              <input name="allowances.transport" value={form.allowances.transport} onChange={handleFormChange} placeholder="Transport" type="number" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-              <input name="allowances.meal" value={form.allowances.meal} onChange={handleFormChange} placeholder="Meal" type="number" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-              <input name="allowances.medical" value={form.allowances.medical} onChange={handleFormChange} placeholder="Medical" type="number" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-              <input name="allowances.other" value={form.allowances.other} onChange={handleFormChange} placeholder="Other" type="number" className="w-full px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="allowances.transport" value={form.allowances.transport} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Transport" type="number" min="0" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="allowances.meal" value={form.allowances.meal} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Meal" type="number" min="0" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="allowances.medical" value={form.allowances.medical} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Medical" type="number" min="0" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="allowances.other" value={form.allowances.other} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Other" type="number" min="0" className="w-full px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
             </div>
 
             {/* Overtime */}
             <div>
               <h4 className="font-semibold text-black mb-2">Overtime</h4>
-              <input name="overtime.normalDayHours" value={form.overtime.normalDayHours} onChange={handleFormChange} placeholder="Normal Day Hours" type="number" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-              <input name="overtime.holidayHours" value={form.overtime.holidayHours} onChange={handleFormChange} placeholder="Holiday Hours" type="number" className="w-full px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="overtime.normalDayHours" value={form.overtime.normalDayHours} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Normal Day Hours" type="number" min="0" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="overtime.holidayHours" value={form.overtime.holidayHours} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Holiday Hours" type="number" min="0" className="w-full px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
             </div>
           </div>
 
@@ -152,9 +162,9 @@ const UpdateSalary = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold text-black mb-2">Deductions</h4>
-              <input name="deductions.loan" value={form.deductions.loan} onChange={handleFormChange} placeholder="Loan" type="number" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-              <input name="deductions.insurance" value={form.deductions.insurance} onChange={handleFormChange} placeholder="Insurance" type="number" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-              <input name="deductions.other" value={form.deductions.other} onChange={handleFormChange} placeholder="Other" type="number" className="w-full px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="deductions.loan" value={form.deductions.loan} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Loan" type="number" min="0" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="deductions.insurance" value={form.deductions.insurance} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Insurance" type="number" min="0" className="w-full mb-2 px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+              <input name="deductions.other" value={form.deductions.other} onChange={handleFormChange} onKeyDown={e => {if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return; if (!/^[0-9]$/.test(e.key)) e.preventDefault();}} placeholder="Other" type="number" min="0" className="w-full px-3 py-2 border rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
             </div>
           </div>
 
