@@ -10,8 +10,6 @@ const Layout = ({ children }) => {
       <main className="flex-grow">
         {children} 
       </main>
-
-<br/>
       <Footer/>
       
     </div>

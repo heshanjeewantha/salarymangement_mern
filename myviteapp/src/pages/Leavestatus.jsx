@@ -1,36 +1,29 @@
 // LeaveList.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Layout from "../components/Layout";
+import { motion, AnimatePresence } from "framer-motion";
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Approved':
-      return 'bg-green-100 text-green-800';
-    case 'Pending':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'Rejected':
-      return 'bg-red-100 text-red-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
+const statusColors = {
+  Pending: "bg-yellow-100 text-yellow-800",
+  Approved: "bg-green-100 text-green-800",
+  Rejected: "bg-red-100 text-red-800",
 };
-
 
 const Leavestatus = () => {
   const [leaves, setLeaves] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updateLoading, setUpdateLoading] = useState({});
-  const [error, setError] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRef = useRef(null);
 
+  // Fetch leaves
   const fetchLeaves = async () => {
     try {
       setLoading(true);
       const res = await axios.get("http://localhost:5000/api/leaves/");
       setLeaves(res.data);
-      setError(null);
     } catch (err) {
-      setError("Failed to fetch leaves: " + err.message);
       console.error("Error fetching leaves:", err);
     } finally {
       setLoading(false);
@@ -41,122 +34,153 @@ const Leavestatus = () => {
     fetchLeaves();
   }, []);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleStatusChange = async (leaveId, newStatus) => {
     try {
-      setUpdateLoading(prev => ({ ...prev, [leaveId]: true }));
-      setError(null);
-      
-      console.log('Attempting to update leave:', leaveId, 'to status:', newStatus);
-      
-      const response = await axios.patch(`http://localhost:5000/api/leaves/${leaveId}`, {
-        status: newStatus
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      console.log('Update response:', response.data);
-
-      // Update the leave in the state immediately
-      setLeaves(prevLeaves => 
-        prevLeaves.map(leave => 
-          leave._id === leaveId ? { ...leave, status: response.data.status } : leave
+      setUpdateLoading((prev) => ({ ...prev, [leaveId]: true }));
+      const res = await axios.patch(
+        `http://localhost:5000/api/leaves/${leaveId}`,
+        { status: newStatus }
+      );
+      setLeaves((prev) =>
+        prev.map((leave) =>
+          leave._id === leaveId ? { ...leave, status: res.data.status } : leave
         )
       );
+      setOpenDropdown(null);
     } catch (err) {
-      console.error("Full error object:", err);
-      console.error("Error response:", err.response);
-      
-      if (err.response) {
-        // Server responded with error status
-        setError(`Failed to update status: ${err.response.status} - ${err.response.data?.error || err.response.statusText}`);
-      } else if (err.request) {
-        // Request was made but no response
-        setError("Failed to update status: No response from server. Make sure the backend is running on http://localhost:5000");
-      } else {
-        // Something else happened
-        setError("Failed to update status: " + err.message);
-      }
-      
-      // Refresh the list to ensure consistency
+      console.error("Status update error:", err);
       fetchLeaves();
     } finally {
-      setUpdateLoading(prev => ({ ...prev, [leaveId]: false }));
+      setUpdateLoading((prev) => ({ ...prev, [leaveId]: false }));
     }
   };
-
- 
 
   return (
     <Layout>
       <div className="p-6 bg-gray-50 min-h-screen">
-        <div className='w-full bg-gradient-to-r from-blue-700 to-purple-500 hover:from-blue-800 hover:to-purple-600 text-white p-2 rounded-md'>
-          <h2 className="text-center text-2xl font-bold">All Leave Requests</h2>
+        <div className="w-full bg-gray-200 text-black p-4 rounded-md shadow-md mb-6">
+          <h2 className="text-center text-2xl font-bold tracking-wide">
+            All Leave Requests
+          </h2>
         </div>
-        
-        {error && (
-          <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
-          </div>
-        )}
 
         {loading ? (
-          <div className="mt-4 text-center text-gray-600">Loading leave requests...</div>
+          <div className="text-center text-gray-600 mt-4">
+            Loading leave requests...
+          </div>
         ) : leaves.length === 0 ? (
-    <p className="text-gray-500">No leave requests found.</p>
-  ) : (
-    <div className="overflow-x-auto shadow-lg rounded-lg mt-8">
-      <table className="min-w-full table-auto border-separate border-spacing-0">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Employee ID</th>
-            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Leave Type</th>
-            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Start Date</th>
-            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">End Date</th>
-            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Reason</th>
-            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">Status</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white">
-          {leaves.map((leave) => (
-            <tr key={leave._id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm text-gray-700">{leave.employeeId}</td>
-              <td className="px-6 py-4 text-sm text-gray-700">{leave.leaveType}</td>
-              <td className="px-6 py-4 text-sm text-gray-700">{new Date(leave.startDate).toLocaleDateString()}</td>
-              <td className="px-6 py-4 text-sm text-gray-700">{new Date(leave.endDate).toLocaleDateString()}</td>
-              <td className="px-6 py-4 text-sm text-gray-700">{leave.reason}</td>
-              <td className="px-6 py-4 text-sm text-gray-700">
-                <div className="relative">
-                  <select
-                    value={leave.status}
-                    onChange={(e) => handleStatusChange(leave._id, e.target.value)}
-                    className={`px-3 py-1 text-sm font-medium rounded border ${getStatusColor(leave.status)} ${updateLoading[leave._id] ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    disabled={updateLoading[leave._id]}
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                  </select>
-                  {updateLoading[leave._id] && (
-                    <span className="absolute right-0 top-0 h-full w-6 flex items-center justify-center">
-                      <svg className="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    </span>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )}
-</div>
+          <p className="text-gray-500">No leave requests found.</p>
+        ) : (
+          <div className="overflow-x-auto rounded-lg shadow-lg">
+            <table className="min-w-full table-auto border border-gray-200">
+              <thead className="bg-gray-700 text-white">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
+                    Employee ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
+                    Leave Type
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
+                    Start Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
+                    End Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
+                    Reason
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white">
+                <AnimatePresence>
+                  {leaves.map((leave, idx) => (
+                    <motion.tr
+                      key={leave._id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className={
+                        idx % 2 === 0
+                          ? "bg-white hover:bg-gray-50 transition"
+                          : "bg-gray-50 hover:bg-gray-100 transition"
+                      }
+                    >
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {leave.employeeId}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {leave.leaveType}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {new Date(leave.startDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {new Date(leave.endDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {leave.reason}
+                      </td>
+                      <td className="px-6 py-4 text-sm relative" ref={dropdownRef}>
+  <button
+    onClick={() =>
+      setOpenDropdown(openDropdown === leave._id ? null : leave._id)
+    }
+    className={`w-full px-4 py-2 font-medium text-sm border rounded-md shadow ${
+      leave.status === "Approved"
+        ? "bg-green-100 text-green-800 border-green-400"
+        : leave.status === "Rejected"
+        ? "bg-red-100 text-red-800 border-red-400"
+        : "bg-yellow-100 text-yellow-800 border-yellow-400"
+    }`}
+    disabled={updateLoading[leave._id]}
+  >
+    {leave.status}
+  </button>
+  {openDropdown === leave._id && (
+    <div className="absolute mt-1 w-full bg-white border rounded-md shadow-md z-50 p-2 flex flex-col gap-2">
+      {["Pending", "Approved", "Rejected"].map((statusOption) => (
+        <button
+          key={statusOption}
+          onClick={() => handleStatusChange(leave._id, statusOption)}
+          className={`w-full px-3 py-2 font-medium text-sm border rounded-md transition ${
+            statusOption === "Approved"
+              ? "bg-green-100 text-green-800 border-green-400"
+              : statusOption === "Rejected"
+              ? "bg-red-100 text-red-800 border-red-400"
+              : "bg-yellow-100 text-yellow-800 border-yellow-400"
+                       } hover:shadow-inner hover:ring-1 hover:ring-blue-500`}
+                     disabled={updateLoading[leave._id]}
+                       >
+                  {statusOption}
+               </button>
+                ))}
+             </div>
+             )}
+         </td>
 
-
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </Layout>
   );
 };

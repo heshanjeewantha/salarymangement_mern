@@ -1,26 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { motion } from 'framer-motion';
+
 const initialSalary = {
   employeeId: '',
   month: '',
   year: '',
   basicSalary: '',
-  allowances: {
-    transport: '',
-    meal: '',
-    medical: '',
-    other: ''
-  },
-  overtime: {
-    normalDayHours: '',
-    holidayHours: ''
-  },
-  deductions: {
-    loan: '',
-    insurance: '',
-    other: ''
-  }
+  allowances: { transport: '', meal: '', medical: '', other: '' },
+  overtime: { normalDayHours: '', holidayHours: '' },
+  deductions: { loan: '', insurance: '', other: '' }
 };
 
 const SalaryForm = () => {
@@ -28,146 +18,225 @@ const SalaryForm = () => {
   const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
 
-  // ...existing code...
-
-  // Handle input changes
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    // Prevent negative values for number inputs
+    if (type === 'number') {
+      // Only allow numbers and decimal point
+      if (value !== '' && !/^\d*\.?\d*$/.test(value)) return;
+      if (value !== '' && Number(value) < 0) return;
+    }
     if (name.includes('.')) {
       const [group, field] = name.split('.');
-      setSalary({
-        ...salary,
-        [group]: {
-          ...salary[group],
-          [field]: value
-        }
-      });
+      setSalary({ ...salary, [group]: { ...salary[group], [field]: value } });
     } else {
       setSalary({ ...salary, [name]: value });
     }
   };
 
-  // Create or update salary
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = editingId ? 'PUT' : 'POST';
-  const url = editingId ? `http://localhost:5000/api/salaries/${editingId}` : 'http://localhost:5000/api/salaries';
-  // Convert relevant fields to numbers
-  const salaryToSend = {
-    ...salary,
-    year: Number(salary.year),
-    basicSalary: Number(salary.basicSalary),
-    allowances: {
-      transport: Number(salary.allowances.transport),
-      meal: Number(salary.allowances.meal),
-      medical: Number(salary.allowances.medical),
-      other: Number(salary.allowances.other)
-    },
-    overtime: {
-      normalDayHours: Number(salary.overtime.normalDayHours),
-      holidayHours: Number(salary.overtime.holidayHours)
-    },
-    deductions: {
-      loan: Number(salary.deductions.loan),
-      insurance: Number(salary.deductions.insurance),
-      other: Number(salary.deductions.other)
-    }
-  };
-  const res = await fetch(url, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(salaryToSend)
-  });
+    const url = editingId ? `http://localhost:5000/api/salaries/${editingId}` : 'http://localhost:5000/api/salaries';
+    const salaryToSend = {
+      ...salary,
+      year: Number(salary.year),
+      basicSalary: Number(salary.basicSalary),
+      allowances: {
+        transport: Number(salary.allowances.transport),
+        meal: Number(salary.allowances.meal),
+        medical: Number(salary.allowances.medical),
+        other: Number(salary.allowances.other)
+      },
+      overtime: {
+        normalDayHours: Number(salary.overtime.normalDayHours),
+        holidayHours: Number(salary.overtime.holidayHours)
+      },
+      deductions: {
+        loan: Number(salary.deductions.loan),
+        insurance: Number(salary.deductions.insurance),
+        other: Number(salary.deductions.other)
+      }
+    };
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(salaryToSend)
+    });
     if (res.ok) {
       setSalary(initialSalary);
       setEditingId(null);
-      
-      setTimeout(() => {
-        navigate('/salary-table');
-      }, 3000);
+      setTimeout(() => navigate('/salary-table'), 2000);
     }
   };
 
-  // Edit salary
-  const handleEdit = (s) => {
-  setSalary(s);
-  setEditingId(s._id);
-  };
-
-  // ...existing code...
-
-  // Demo employee IDs
   const demoEmployeeIds = Array.from({ length: 10 }, (_, i) => `EMP${(i+1).toString().padStart(4, '0')}`);
 
   return (
     <Layout>
-      <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg mt-8">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Salary CRUD Form</h2>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-xl mt-10"
+      >
+        <h2 className="text-3xl font-bold mb-8 text-center text-black drop-shadow-sm">
+          Salary CRUD Form
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">Employee ID</label>
-              <select name="employeeId" value={salary.employeeId} onChange={e => setSalary({ ...salary, employeeId: e.target.value })} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option value="" disabled selected hidden>Select Employee ID</option>
-                {demoEmployeeIds.map(id => (
-                  <option key={id} value={id}>{id}</option>
-                ))}
+              <label className="block mb-2 text-sm font-semibold text-black">Employee ID</label>
+              <select
+                name="employeeId"
+                value={salary.employeeId}
+                onChange={e => setSalary({ ...salary, employeeId: e.target.value })}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+              >
+                <option value="" disabled>Select Employee ID</option>
+                {demoEmployeeIds.map(id => <option key={id} value={id}>{id}</option>)}
               </select>
             </div>
+
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">Month</label>
-              <select name="month" value={salary.month} onChange={handleChange} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+              <label className="block mb-2 text-sm font-semibold text-black">Month</label>
+              <select
+                name="month"
+                value={salary.month}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+              >
                 <option value="">Select Month</option>
                 {['January','February','March','April','May','June','July','August','September','October','November','December'].map(m => (
                   <option key={m} value={m}>{m}</option>
                 ))}
               </select>
             </div>
+
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">Year</label>
-              <select name="year" value={salary.year} onChange={handleChange} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+              <label className="block mb-2 text-sm font-semibold text-black">Year</label>
+              <select
+                name="year"
+                value={salary.year}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+              >
                 <option value="">Select Year</option>
-                {Array.from({length: 10}, (_, i) => new Date().getFullYear() - i).map(y => (
+                {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(y => (
                   <option key={y} value={y}>{y}</option>
                 ))}
               </select>
             </div>
+
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">Basic Salary</label>
-              <input name="basicSalary" value={salary.basicSalary} onChange={handleChange} placeholder="Basic Salary" required type="number" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <label className="block mb-2 text-sm font-semibold text-black">Basic Salary</label>
+              <input
+                name="basicSalary"
+                value={salary.basicSalary}
+                onChange={handleChange}
+                onKeyDown={e => {
+                  // Allow: backspace, delete, tab, escape, enter, arrows, dot
+                  if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                  // Prevent: letters and other non-numeric keys
+                  if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                }}
+                placeholder="Basic Salary"
+                type="number"
+                min="0"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+              />
             </div>
           </div>
+
+          {/* Allowances */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-blue-600 mb-2">Allowances</h4>
-              <input name="allowances.transport" value={salary.allowances.transport} onChange={handleChange} placeholder="Transport" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-              <input name="allowances.meal" value={salary.allowances.meal} onChange={handleChange} placeholder="Meal" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-              <input name="allowances.medical" value={salary.allowances.medical} onChange={handleChange} placeholder="Medical" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-              <input name="allowances.other" value={salary.allowances.other} onChange={handleChange} placeholder="Other" type="number" className="w-full px-4 py-2 border rounded-lg" />
+              <h4 className="font-bold text-black mb-2">Allowances</h4>
+              {['transport', 'meal', 'medical', 'other'].map(field => (
+                <input
+                  key={field}
+                  name={`allowances.${field}`}
+                  value={salary.allowances[field]}
+                  onChange={handleChange}
+                  onKeyDown={e => {
+                    if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                  }}
+                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  type="number"
+                  min="0"
+                  className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+                />
+              ))}
             </div>
+
+            {/* Overtime */}
             <div>
-              <h4 className="font-semibold text-blue-600 mb-2">Overtime</h4>
-              <input name="overtime.normalDayHours" value={salary.overtime.normalDayHours} onChange={handleChange} placeholder="Normal Day Hours" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-              <input name="overtime.holidayHours" value={salary.overtime.holidayHours} onChange={handleChange} placeholder="Holiday Hours" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-              {/* Only normalDayHours and holidayHours needed for overtime */}
+              <h4 className="font-bold text-black mb-2">Overtime</h4>
+              {['normalDayHours', 'holidayHours'].map(field => (
+                <input
+                  key={field}
+                  name={`overtime.${field}`}
+                  value={salary.overtime[field]}
+                  onChange={handleChange}
+                  onKeyDown={e => {
+                    if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                  }}
+                  placeholder={field === 'normalDayHours' ? 'Normal Day Hours' : 'Holiday Hours'}
+                  type="number"
+                  min="0"
+                  className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+                />
+              ))}
             </div>
           </div>
+
+          {/* Deductions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-blue-600 mb-2">Deductions</h4>
-              <input name="deductions.loan" value={salary.deductions.loan} onChange={handleChange} placeholder="Loan" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-              {/* Only loan, insurance, other needed for deductions */}
-              <input name="deductions.insurance" value={salary.deductions.insurance} onChange={handleChange} placeholder="Insurance" type="number" className="w-full mb-2 px-4 py-2 border rounded-lg" />
-              <input name="deductions.other" value={salary.deductions.other} onChange={handleChange} placeholder="Other" type="number" className="w-full px-4 py-2 border rounded-lg" />
+              <h4 className="font-bold text-black mb-2">Deductions</h4>
+              {['loan', 'insurance', 'other'].map(field => (
+                <input
+                  key={field}
+                  name={`deductions.${field}`}
+                  value={salary.deductions[field]}
+                  onChange={handleChange}
+                  onKeyDown={e => {
+                    if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                  }}
+                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  type="number"
+                  min="0"
+                  className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+                />
+              ))}
             </div>
-            {/* Net Salary is calculated in backend, no input needed */}
           </div>
+
           <div className="flex space-x-4 justify-center mt-6">
-            <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">{editingId ? 'Update' : 'Create'}</button>
-            {editingId && <button type="button" onClick={() => { setSalary(initialSalary); setEditingId(null); }} className="bg-gray-400 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-500 transition">Cancel</button>}
+            <button
+              type="submit"
+              className="bg-blue-700 hover:bg-blue-500 px-6 py-2 rounded-lg font-semibold text-white shadow transform hover:-translate-y-1 transition-all duration-300"
+            >
+              {editingId ? 'Update' : 'Create'}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                onClick={() => { setSalary(initialSalary); setEditingId(null); }}
+                className="bg-gray-400 hover:bg-gray-500 px-6 py-2 rounded-lg font-semibold text-white shadow transform hover:-translate-y-1 transition-all duration-300"
+              >
+                Cancel
+              </button>
+            )}
           </div>
         </form>
-      </div>
+      </motion.div>
     </Layout>
   );
 };
