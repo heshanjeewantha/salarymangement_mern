@@ -18,53 +18,47 @@ const useClickOutside = (ref, callback) => {
 
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Set this dynamically in production
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Set dynamically in production
   const userMenuRef = useRef(null);
   const navigate = useNavigate();
-  const [user,setuser] = useState(null);
+  const [user, setUser] = useState(null);
 
-   useEffect(() => {
+  useEffect(() => {
     axios
       .get("http://localhost:4000/api/user/profile", { withCredentials: true })
-      .then((res) => {
-        setuser(res.data.user);
-      })
+      .then((res) => setUser(res.data.user));
   }, []);
-
 
   useClickOutside(userMenuRef, () => setIsUserMenuOpen(false));
 
-  const handleLogout =  () => {
-        
-        axios.post("http://localhost:4000/api/user/logout", {}, { withCredentials: true });
-        setIsLoggedIn(false);
-        setIsUserMenuOpen(false);
-        navigate("/");
-        
+  const handleLogout = () => {
+    axios.post("http://localhost:4000/api/user/logout", {}, { withCredentials: true });
+    setIsLoggedIn(false);
+    setIsUserMenuOpen(false);
+    navigate("/");
   };
 
-  
   return (
-    <nav className="bg-gradient-to-r from-blue-700 to-purple-500 shadow-lg">
+    <nav className="bg-blue-700 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16">
 
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <h1 className="text-2xl font-bold text-white">Uraban Council</h1>
+            <h1 className="text-xl font-semibold text-white tracking-wide">
+              Home
+            </h1>
           </Link>
 
           {/* Right-side icons */}
           <div className="flex items-center space-x-4">
-            
-
             {/* User menu button */}
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="p-2 text-white focus:outline-none"
+                className="p-2 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-white transition"
               >
-                <UserIcon className="h-6 w-6" />
+                <UserIcon className="h-6 w-6 text-white" />
               </button>
 
               {/* Dropdown menu */}
@@ -74,21 +68,21 @@ const Header = () => {
                     <>
                       <Link
                         to="/leavestatus"
-                        className="block px-4 py-2 text-gray-900 hover:bg-gradient-to-r from-blue-400 to-purple-200"
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100 transition"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Dashboard
                       </Link>
                       <Link
                         to="/update-salary/1"
-                        className="block px-4 py-2 text-gray-900 hover:bg-gradient-to-r from-green-400 to-green-200"
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100 transition"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Update Salary
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-gray-900 hover:bg-gradient-to-r from-blue-400 to-purple-200"
+                        className="w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100 transition"
                       >
                         Logout
                       </button>
@@ -97,14 +91,14 @@ const Header = () => {
                     <>
                       <Link
                         to="/login"
-                        className="block px-4 py-2 text-gray-900 hover:bg-gradient-to-r from-blue-400 to-purple-200"
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100 transition"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Sign In
                       </Link>
                       <Link
                         to="/register"
-                        className="block px-4 py-2 text-gray-900 hover:bg-blue-200"
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100 transition"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Register
