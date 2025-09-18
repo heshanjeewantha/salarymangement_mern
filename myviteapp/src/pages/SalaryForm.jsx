@@ -19,7 +19,13 @@ const SalaryForm = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    // Prevent negative values for number inputs
+    if (type === 'number') {
+      // Only allow numbers and decimal point
+      if (value !== '' && !/^\d*\.?\d*$/.test(value)) return;
+      if (value !== '' && Number(value) < 0) return;
+    }
     if (name.includes('.')) {
       const [group, field] = name.split('.');
       setSalary({ ...salary, [group]: { ...salary[group], [field]: value } });
@@ -131,8 +137,15 @@ const SalaryForm = () => {
                 name="basicSalary"
                 value={salary.basicSalary}
                 onChange={handleChange}
+                onKeyDown={e => {
+                  // Allow: backspace, delete, tab, escape, enter, arrows, dot
+                  if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                  // Prevent: letters and other non-numeric keys
+                  if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                }}
                 placeholder="Basic Salary"
                 type="number"
+                min="0"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
               />
             </div>
@@ -148,8 +161,13 @@ const SalaryForm = () => {
                   name={`allowances.${field}`}
                   value={salary.allowances[field]}
                   onChange={handleChange}
+                  onKeyDown={e => {
+                    if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                  }}
                   placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                   type="number"
+                  min="0"
                   className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
                 />
               ))}
@@ -164,8 +182,13 @@ const SalaryForm = () => {
                   name={`overtime.${field}`}
                   value={salary.overtime[field]}
                   onChange={handleChange}
+                  onKeyDown={e => {
+                    if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                  }}
                   placeholder={field === 'normalDayHours' ? 'Normal Day Hours' : 'Holiday Hours'}
                   type="number"
+                  min="0"
                   className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
                 />
               ))}
@@ -182,8 +205,13 @@ const SalaryForm = () => {
                   name={`deductions.${field}`}
                   value={salary.deductions[field]}
                   onChange={handleChange}
+                  onKeyDown={e => {
+                    if (["Backspace","Delete","Tab","Escape","Enter","ArrowLeft","ArrowRight","."].includes(e.key)) return;
+                    if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+                  }}
                   placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                   type="number"
+                  min="0"
                   className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
                 />
               ))}
